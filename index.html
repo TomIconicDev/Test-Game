@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Drive Thru Coffee — Three.js</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="game"></div>
+
+  <div class="topbar">
+    <div class="brand"><span class="logo">☕</span><div><b>Drive Thru</b><small>COFFEE CO.</small></div></div>
+    <div class="stats">
+      <div>💵 <b id="cash">$83</b></div>
+      <div>💎 <b id="gems">4</b></div>
+      <div>⭐ <b id="level">1</b></div>
+    </div>
+  </div>
+
+  <div class="left-tools">
+    <button id="shopBtn" title="Shop">🛍️</button>
+    <button id="mapBtn" title="Map">🗺️</button>
+    <button id="tasksBtn" title="Tasks">📋</button>
+  </div>
+
+  <div class="right-tools">
+    <button id="upgradeBtn" title="Upgrade">⬆️</button>
+  </div>
+
+  <div id="taskPanel" class="panel hidden">
+    <h2>Today's tasks</h2>
+    <p>Serve <b id="servedCount">0</b>/10 customers</p>
+    <p>Make <b id="coffeeCount">0</b>/5 coffees</p>
+    <button id="closeTasks">Close</button>
+  </div>
+
+  <div id="toast"></div>
+  <div id="hint">Click a workstation to interact. Customers arrive automatically.</div>
+
+  <div id="bottomAd" class="ad">YOUR BRAND HERE · GITHUB PAGES READY</div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
