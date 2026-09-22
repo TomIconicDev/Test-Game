@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Follower Overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--scale:1;--gap:26px;--icon:58px;--count:42px}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent}
+body{font-family:Inter,Arial,sans-serif;display:flex;align-items:flex-start;justify-content:flex-start}
+.overlay{display:flex;flex-direction:column;gap:var(--gap);padding:30px}
+.row{display:flex;align-items:center;gap:18px;filter:drop-shadow(0 3px 8px rgba(0,0,0,.35));opacity:0;transform:translateY(5px);animation:in .5s ease forwards}
+.row:nth-child(2){animation-delay:.08s}
+.logo{width:var(--icon);height:var(--icon);flex:none;display:grid;place-items:center}
+.logo svg{width:100%;height:100%;display:block}
+.count{font-size:var(--count);line-height:1;letter-spacing:-1.5px;color:#fff;font-weight:800;text-shadow:0 3px 10px rgba(0,0,0,.65);font-variant-numeric:tabular-nums}
+.pulse{animation:pulse .35s ease}
+@keyframes in{to{opacity:1;transform:none}}
+@keyframes pulse{50%{transform:scale(1.045)}}
+@media(max-width:700px){:root{--icon:48px;--count:34px;--gap:18px}.overlay{padding:20px}}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay">
+  <div class="row"><div class="logo" aria-label="TikTok">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#25F4EE" d="M39 10v27.5a10.5 10.5 0 1 1-8-10.2V36a3.5 3.5 0 1 0 3 3.5V10h5z"/><path fill="#FE2C55" d="M43 7c.8 5.2 4.2 8.8 9 9.6v7.1c-3.4-.3-6.4-1.5-9-3.5v17.3a10.5 10.5 0 1 1-8-10.2V36a3.5 3.5 0 1 0 3 3.5V7h5z"/><path fill="#fff" d="M36 7h7c.8 5.2 4.2 8.8 9 9.6v5.1c-4.7-.8-8.2-3.1-11-6.5v18.3a10.5 10.5 0 1 1-8-10.2v5.4a3.5 3.5 0 1 0 3 3.5V7z"/></svg>
+  </div><div class="count" id="tiktok">0</div></div>
+  <div class="row"><div class="logo" aria-label="Instagram">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="ig" x1="5" y1="59" x2="59" y2="5"><stop stop-color="#FFDC80"/><stop offset=".35" stop-color="#FC2A54"/><stop offset=".68" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><rect x="5" y="5" width="54" height="54" rx="16" fill="url(#ig)"/><rect x="17" y="17" width="30" height="30" rx="9" fill="none" stroke="#fff" stroke-width="4"/><circle cx="32" cy="32" r="7" fill="none" stroke="#fff" stroke-width="4"/><circle cx="45" cy="19" r="2.8" fill="#fff"/></svg>
+  </div><div class="count" id="instagram">0</div></div>
+</div>
+<script>
+const params=new URLSearchParams(location.search);
+const state={tiktok:Number(params.get('tiktok'))||0,instagram:Number(params.get('instagram'))||0};
+const dataUrl=params.get('data')||'';
+const interval=Math.max(2000,Number(params.get('interval'))||5000);
+const $=id=>document.getElementById(id);
+function fmt(n){return Number(n||0).toLocaleString('en-GB')}
+function set(id,n){
+ const el=$(id), next=Number(n)||0, old=Number(el.dataset.value||0);
+ el.dataset.value=next; el.textContent=fmt(next);
+ if(old && old!==next){el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse')}
+}
+async function refresh(){
+ if(!dataUrl){set('tiktok',state.tiktok);set('instagram',state.instagram);return}
+ try{
+   const r=await fetch(dataUrl+(dataUrl.includes('?')?'&':'?')+'_='+Date.now(),{cache:'no-store'});
+   const d=await r.json();
+   if(d.tiktok!=null)set('tiktok',d.tiktok);
+   if(d.instagram!=null)set('instagram',d.instagram);
+ }catch(e){}
+}
+refresh(); setInterval(refresh,interval);
+</script>
+</body>
+</html>
